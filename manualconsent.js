@@ -174,6 +174,7 @@
             hideBannerclient(document.getElementById("simple-consent-banner"));
             return; // Exit early if consent is already given
         }
+      
 
         // Show the appropriate banner based on the location data
         if (locationData === "GDPR") {
