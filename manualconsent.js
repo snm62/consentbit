@@ -1,4 +1,19 @@
-
+#main-consent-banner,
+#main-banner,
+#consent-banner,
+#initial-consent-banner {
+    display: none !important; /* Hide all banners by default */
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+#main-consent-banner.show-banner,
+#main-banner.show-banner,
+#consent-banner.show-banner,
+#initial-consent-banner.show-banner {
+    display: block !important; /* Show banners when needed */
+    opacity: 1 !important;
+    visibility: visible !important;
+}
 (async () => {
   // Initialize state object
   window.__CMP_STATE__ = window.__CMP_STATE__ || {
