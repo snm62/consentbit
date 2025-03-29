@@ -6,7 +6,12 @@
     loaded: false,
     initialized: false
   };
+   hideBannerclient(document.getElementById("consent-banner"));
+   hideBannerclient(document.getElementById("initial-consent-banner"));
+   hideBannerclient(document.getElementById("main-banner"));
+   hideBannerclient(document.getElementById("main-consent-banner "));
 
+  
   const CONFIG = {
     maxRetries: 5,
     baseUrl: 'https://app.consentbit.com',
@@ -38,7 +43,7 @@
     static async getToken() {
       try {
         const response = await this.fetchWithTimeout(
-          `${CONFIG.baseUrl}/cmp/request-token`,
+          `${CONFIG.baseUrl}/request-token`,
           {
             method: 'GET',
             mode: 'cors',
@@ -67,7 +72,7 @@
     static async getLocation() {
       try {
         const response = await this.fetchWithTimeout(
-          `${CONFIG.baseUrl}/cmp/detect-location`,
+          `${CONFIG.baseUrl}/detect-location`,
           {
             method: 'GET',
             mode: 'cors',
@@ -81,6 +86,7 @@
         }
 
         const locationData = await response.json();
+        console.log(typeof locationData);
         return locationData;
       } catch (error) {
         console.error("Location fetch error:", error);
@@ -96,7 +102,7 @@
 
         const script = document.createElement('script');
         const timestamp = Date.now();
-        script.src = `${CONFIG.baseUrl}/cmp/cmp-script?token=${encodeURIComponent(token)}&_=${timestamp}`;
+        script.src = `${CONFIG.baseUrl}/cmp-script?token=${encodeURIComponent(token)}&_=${timestamp}`;
         script.async = true;
         
         const timeoutId = setTimeout(() => {
@@ -109,6 +115,7 @@
           clearTimeout(timeoutId);
           window.__CMP_STATE__.loaded = true;
           window.__CMP_STATE__.loading = false;
+          
           resolve(true);
         };
 
@@ -144,6 +151,9 @@
           fetchBanner(locationData);
           await this.loadScript(token);
           
+          // Call fetchBanner to show the appropriate banner
+          
+          
           return true;
 
         } catch (error) {
@@ -171,9 +181,11 @@
             hideBannerclient(document.getElementById("initial-consent-banner"));
             hideBannerclient(document.getElementById("main-banner"));
             hideBannerclient(document.getElementById("main-consent-banner"));
-            hideBannerclient(document.getElementById("simple-consent-banner"));
             return; // Exit early if consent is already given
         }
+
+        // Log the location data for debugging
+        console.log('Fetched Location Data:', locationData);
 
         // Show the appropriate banner based on the location data
         if (locationData === "GDPR") {
@@ -195,11 +207,11 @@
     } catch (error) {
         console.error("Error fetching banner:", error);
     }
-  }
-
-  function showBannerclient(banner) {
+}
+ function showBannerclient(banner) {
     if (banner) {
       banner.style.display = "block";
+      console.log(banner);// Show the banner
       banner.classList.add("show-banner");
       banner.classList.remove("hidden");
     }
@@ -234,9 +246,9 @@
 })();
 
 (function() {
-    const DELAY_MS = 3000; // Delay for restoring scripts
-    const analyticsPatterns = /hubspot|matomo|plausible.io|gtag|analytics|googletagmanager|google-analytics|fbevents|facebook|mixpanel|segment|amplitude|hotjar|piwik|clicky|kaltura|quantcast|newrelic/i;
-
+    const DELAY_MS = 3000;
+    const analyticsPatterns = /gtag|analytics|googletagmanager|google-analytics|fbevents|facebook/i;
+    
     // Block initial script loading
     const originalCreateElement = document.createElement;
     document.createElement = function(tag) {
@@ -245,8 +257,9 @@
             const originalSetAttribute = element.setAttribute;
             element.setAttribute = function(name, value) {
                 if (name === 'src' && analyticsPatterns.test(value)) {
+                    
                     element.type = 'javascript/blocked';
-                    element.dataset.originalSrc = value; // Store the original source
+                    element.dataset.originalSrc = value;
                     return;
                 }
                 return originalSetAttribute.call(this, name, value);
@@ -260,10 +273,10 @@
         const scripts = document.querySelectorAll('script[src]');
         scripts.forEach(script => {
             if (analyticsPatterns.test(script.src)) {
-                console.log("Blocking script from head:", script.src);
+                
                 script.type = 'javascript/blocked';
-                script.dataset.originalSrc = script.src; // Store the original source
-                script.src = ''; // Prevent the script from loading
+                script.dataset.originalSrc = script.src;
+                script.src = '';
             }
         });
     }
@@ -282,31 +295,25 @@
     // Function to restore scripts after delay
     function restoreScripts() {
         if (window.cmpLoaded) {
-            console.log("CMP script loaded, restoring blocked scripts.");
-            const blockedScripts = document.querySelectorAll('script[type="javascript/blocked"]');
-            blockedScripts.forEach(script => {
-                if (script.dataset.originalSrc) {
-                    const newScript = document.createElement('script');
-                    newScript.src = script.dataset.originalSrc;
-                    newScript.async = true;
-                    script.parentNode.replaceChild(newScript, script);
-                }
-            });
+            
+            return;
         }
-    }
 
-    // Monitor for CMP script loading
-    const originalAddEventListener = window.addEventListener;
-    window.addEventListener = function(type, listener, options) {
-        if (type === 'load' && listener.toString().includes('cmpLoaded')) {
-            // If CMP script is loaded, set cmpLoaded to true
-            window.cmpLoaded = true;
-            restoreScripts(); // Restore blocked scripts
-        }
-        return originalAddEventListener.call(this, type, listener, options);
-    };
+        const blockedScripts = document.querySelectorAll('script[type="javascript/blocked"]');
+        blockedScripts.forEach(script => {
+            if (script.dataset.originalSrc) {
+                
+                const newScript = document.createElement('script');
+                newScript.src = script.dataset.originalSrc;
+                newScript.async = true;
+                script.parentNode.replaceChild(newScript, script);
+            }
+        });
+    }
 
     // Set timeout for script restoration
     setTimeout(restoreScripts, DELAY_MS);
 })();
+
+
 
