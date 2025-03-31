@@ -86,7 +86,7 @@
         }
 
         const locationData = await response.json();
-        console.log(typeof locationData);
+        
         return locationData;
       } catch (error) {
         console.error("Location fetch error:", error);
