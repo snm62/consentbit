@@ -175,7 +175,7 @@
         // Check if consent has been given
         const consentGiven = localStorage.getItem("consent-given");
         if (consentGiven === "true") {
-            console.log("Consent already given, hiding banners.");
+            
             // Hide all banners immediately if consent is given
             hideBannerclient(document.getElementById("consent-banner"));
             hideBannerclient(document.getElementById("initial-consent-banner"));
@@ -189,17 +189,17 @@
 
         // Show the appropriate banner based on the location data
         if (locationData === "GDPR") {
-            console.log("Showing GDPR banner");
+            
             hideBannerclient(document.getElementById("initial-consent-banner"));
             hideBannerclient(document.getElementById("main-consent-banner"));
             showBannerclient(document.getElementById("consent-banner"));
         } else if (locationData === "CCPA") {
-            console.log("Showing CCPA banner");
+            
             hideBannerclient(document.getElementById("consent-banner"));
             hideBannerclient(document.getElementById("main-banner"));
             showBannerclient(document.getElementById("initial-consent-banner"));
         } else {
-            console.log("No specific banner to show, defaulting to GDPR");
+            
             hideBannerclient(document.getElementById("initial-consent-banner"));
             hideBannerclient(document.getElementById("main-consent-banner"));
             showBannerclient(document.getElementById("consent-banner"));
