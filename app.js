@@ -147,7 +147,7 @@
 
           // Fetch location data
           const locationData = await this.getLocation();
-          console.log('Location Data:', locationData); // Log the location data
+           // Log the location data
           fetchBanner(locationData);
           await this.loadScript(token);
           
@@ -185,7 +185,7 @@
         }
 
         // Log the location data for debugging
-        console.log('Fetched Location Data:', locationData);
+        
 
         // Show the appropriate banner based on the location data
         if (locationData === "GDPR") {
