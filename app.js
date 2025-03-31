@@ -211,7 +211,7 @@
  function showBannerclient(banner) {
     if (banner) {
       banner.style.display = "block";
-      console.log(banner);// Show the banner
+      
       banner.classList.add("show-banner");
       banner.classList.remove("hidden");
     }
