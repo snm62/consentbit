@@ -17,7 +17,20 @@
     visibility: visible !important;
 }
 </style>
-
+<script>
+  // Wait for the DOM to be fully loaded
+  document.addEventListener('DOMContentLoaded', function() {
+    // Get the checkbox element
+    const necessaryCheckbox = document.getElementById('necessary-checkbox');
+    
+    // Check if the element exists
+    if (necessaryCheckbox) {
+      // Set it as checked and disabled
+      necessaryCheckbox.checked = true;
+      necessaryCheckbox.disabled = true;
+    }
+  });
+</script>
 <style>
 /* Remove display: none from CSS to avoid conflicts */
 #toggle-consent-btn {
