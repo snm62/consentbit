@@ -1,1 +1,179 @@
+#main-consent-banner,
+#main-banner,
+#consent-banner,
+#initial-consent-banner {
+    display: none !important; /* Hide all banners by default */
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+#main-consent-banner.show-banner,
+#main-banner.show-banner,
+#consent-banner.show-banner,
+#initial-consent-banner.show-banner {
+    display: flex !important; /* Show banners when needed */
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+/* Bottom-origin animations (for banner divs) */
+@keyframes slideUpBottom {
+    from {
+        transform: translateY(100%); /* Start from bottom */
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+@keyframes slideDownBottom {
+    from {
+        transform: translateY(-100%); /* Start from top */
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+@keyframes slideLeftBottom {
+    from {
+        transform: translateX(100%); /* Start from right */
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+@keyframes slideRightBottom {
+    from {
+        transform: translateX(-100%); /* Start from left */
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+@keyframes fadeBottom {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+/* Center-origin animations (for preference divs) */
+@keyframes slideUpCenter {
+    from {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, 100%); /* Start from below center */
+        opacity: 0;
+    }
+    to {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%); /* Animate to center */
+        opacity: 1;
+    }
+}
+@keyframes slideDownCenter {
+    from {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -200%); /* Start from above center */
+        opacity: 0;
+    }
+    to {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 1;
+    }
+}
+@keyframes slideLeftCenter {
+    from {
+        top: 50%;
+        left: 50%;
+        transform: translate(100%, -50%); /* Start from right of center */
+        opacity: 0;
+    }
+    to {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 1;
+    }
+}
+@keyframes slideRightCenter {
+    from {
+        top: 50%;
+        left: 50%;
+        transform: translate(-200%, -50%); /* Start from left of center */
+        opacity: 0;
+    }
+    to {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 1;
+    }
+}
+@keyframes fadeCenter {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+/* Apply bottom-origin animations to banner divs */
+.consentbit-banner-div[data-animation="slide-up"],
+.consentbit-ccpa-banner-div[data-animation="slide-up"],
+.consentbit-gdpr-banner-div[data-animation="slide-up"] {
+    animation: slideUpBottom 0.6s ease-out;
+}
+.consentbit-banner-div[data-animation="slide-down"],
+.consentbit-ccpa-banner-div[data-animation="slide-down"],
+.consentbit-gdpr-banner-div[data-animation="slide-down"] {
+    animation: slideDownBottom 0.6s ease-out;
+}
+.consentbit-banner-div[data-animation="slide-left"],
+.consentbit-ccpa-banner-div[data-animation="slide-left"],
+.consentbit-gdpr-banner-div[data-animation="slide-left"] {
+    animation: slideLeftBottom 0.6s ease-out;
+}
+.consentbit-banner-div[data-animation="slide-right"],
+.consentbit-ccpa-banner-div[data-animation="slide-right"],
+.consentbit-gdpr-banner-div[data-animation="slide-right"] {
+    animation: slideRightBottom 0.6s ease-out;
+}
+.consentbit-banner-div[data-animation="fade"],
+.consentbit-ccpa-banner-div[data-animation="fade"],
+.consentbit-gdpr-banner-div[data-animation="fade"] {
+    animation: fadeBottom 0.6s ease-out;
+}
+/* Apply center-origin animations to preference divs */
+.consentbit-preference-div[data-animation="slide-up"],
+.consentbit-ccpa-preference-div[data-animation="slide-up"] {
+    animation: slideUpCenter 0.6s ease-out;
+}
+.consentbit-preference-div[data-animation="slide-down"],
+.consentbit-ccpa-preference-div[data-animation="slide-down"] {
+    animation: slideDownCenter 0.6s ease-out;
+}
+.consentbit-preference-div[data-animation="slide-left"],
+.consentbit-ccpa-preference-div[data-animation="slide-left"] {
+    animation: slideLeftCenter 0.6s ease-out;
+}
+.consentbit-preference-div[data-animation="slide-right"],
+.consentbit-ccpa-preference-div[data-animation="slide-right"] {
+    animation: slideRightCenter 0.6s ease-out;
+}
+.consentbit-preference-div[data-animation="fade"],
+.consentbitt-ccpa-preference-div[data-animation="fade"] {
+    animation: fadeCenter 0.6s ease-out;
+}
+
 
