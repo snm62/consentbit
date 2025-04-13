@@ -1579,7 +1579,7 @@ function blockAnalyticsRequests() {
     window.buildConsentPreferences= buildConsentPreferences;
     window.storeEncryptedConsent=storeEncryptedConsent;
     window.buildPayload = buildPayload;
-    window.getCookieDescription =getCookieDescription;
+    
   window.loadConsentStyles = loadConsentStyles;
   window.hardenScriptBlocking= hardenScriptBlocking;
   
