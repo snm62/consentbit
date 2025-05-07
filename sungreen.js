@@ -132,7 +132,7 @@
       });
     }
 
-    static async initialize() {
+  static async initialize() {
   let attempt = 0;
   let delay = CONFIG.retryDelay;
 
@@ -184,7 +184,6 @@
   }
   return false;
 }
-
   async function fetchBanner(locationData) {
     try {
         // Check if consent has been given
