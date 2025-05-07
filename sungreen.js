@@ -133,47 +133,57 @@
     }
 
     static async initialize() {
-      let attempt = 0;
-      let delay = CONFIG.retryDelay;
+  let attempt = 0;
+  let delay = CONFIG.retryDelay;
 
-      while (attempt < CONFIG.maxRetries) {
-        try {
-          attempt++;
-          
-          const token = await this.getToken();
-          if (!token) {
-            throw new Error('Invalid token');
-          }
+  while (attempt < CONFIG.maxRetries) {
+    try {
+      attempt++;
 
-          // Fetch location data
-          let locationData = await this.getLocation();
-           if (
-             window.location.hostname === "sungreensystems.com" ||
-             window.location.hostname === "www.sungreensystems.com"
-) {
-  locationData = "GDPR";
-}
-          fetchBanner(locationData);
-          await this.loadScript(token);
-          
-          // Call fetchBanner to show the appropriate banner
-          
-          
-          return true;
-
-        } catch (error) {
-          if (attempt === CONFIG.maxRetries) {
-            console.error('CMP script loading failed after all retries');
-            return false;
-          }
-
-          await new Promise(resolve => setTimeout(resolve, delay));
-          delay *= 1.5; // Exponential backoff
-        }
+      const token = await this.getToken();
+      if (!token) {
+        throw new Error('Invalid token');
       }
-      return false;
+
+      // Fetch location data
+      let locationData = await this.getLocation();
+
+      // --- Hardcode GDPR for sungreensystems.com ---
+      let bannerType;
+      if (
+        window.location.hostname === "sungreensystems.com" ||
+        window.location.hostname === "www.sungreensystems.com"
+      ) {
+        bannerType = "GDPR";
+      } else if (locationData && typeof locationData === "object") {
+        if (locationData.isEU) {
+          bannerType = "GDPR";
+        } else if (locationData.country === "US") {
+          bannerType = "CCPA";
+        } else {
+          bannerType = "GDPR";
+        }
+      } else {
+        bannerType = locationData;
+      }
+
+      fetchBanner(bannerType);
+      await this.loadScript(token);
+
+      return true;
+
+    } catch (error) {
+      if (attempt === CONFIG.maxRetries) {
+        console.error('CMP script loading failed after all retries');
+        return false;
+      }
+
+      await new Promise(resolve => setTimeout(resolve, delay));
+      delay *= 1.5; // Exponential backoff
     }
   }
+  return false;
+}
 
   async function fetchBanner(locationData) {
     try {
