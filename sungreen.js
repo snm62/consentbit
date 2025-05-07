@@ -1,3 +1,4 @@
+
 (async () => {
   // Initialize state object
   window.__CMP_STATE__ = window.__CMP_STATE__ || {
@@ -10,6 +11,7 @@
    hideBannerclient(document.getElementById("main-banner"));
    hideBannerclient(document.getElementById("main-consent-banner "));
 
+  
   const CONFIG = {
     maxRetries: 5,
     baseUrl: 'https://app.consentbit.com',
@@ -67,7 +69,30 @@
       }
     }
 
-    // --- REMOVE getLocation, not needed anymore ---
+    static async getLocation() {
+      try {
+        const response = await this.fetchWithTimeout(
+          `${CONFIG.baseUrl}/detect-location`,
+          {
+            method: 'GET',
+            mode: 'cors',
+            credentials: 'omit'
+          }
+        );
+
+        if (!response.ok) {
+          console.error(`Location request failed with status: ${response.status}`);
+          return null;
+        }
+
+        const locationData = await response.json();
+        
+        return locationData;
+      } catch (error) {
+        console.error("Location fetch error:", error);
+        return null;
+      }
+    }
 
     static loadScript(token) {
       return new Promise((resolve, reject) => {
@@ -120,10 +145,20 @@
             throw new Error('Invalid token');
           }
 
-          // --- HARDCODE GDPR HERE ---
-          const locationData = "GDPR";
+          // Fetch location data
+          let locationData = await this.getLocation();
+           if (
+             window.location.hostname === "sungreensystems.com" ||
+             window.location.hostname === "www.sungreensystems.com"
+) {
+  locationData = "GDPR";
+}
           fetchBanner(locationData);
           await this.loadScript(token);
+          
+          // Call fetchBanner to show the appropriate banner
+          
+          
           return true;
 
         } catch (error) {
@@ -145,6 +180,7 @@
         // Check if consent has been given
         const consentGiven = localStorage.getItem("consent-given");
         if (consentGiven === "true") {
+            
             // Hide all banners immediately if consent is given
             hideBannerclient(document.getElementById("consent-banner"));
             hideBannerclient(document.getElementById("initial-consent-banner"));
@@ -153,16 +189,22 @@
             return; // Exit early if consent is already given
         }
 
+        // Log the location data for debugging
+        
+
         // Show the appropriate banner based on the location data
         if (locationData === "GDPR") {
+            
             hideBannerclient(document.getElementById("initial-consent-banner"));
             hideBannerclient(document.getElementById("main-consent-banner"));
             showBannerclient(document.getElementById("consent-banner"));
         } else if (locationData === "CCPA") {
+            
             hideBannerclient(document.getElementById("consent-banner"));
             hideBannerclient(document.getElementById("main-banner"));
             showBannerclient(document.getElementById("initial-consent-banner"));
         } else {
+            
             hideBannerclient(document.getElementById("initial-consent-banner"));
             hideBannerclient(document.getElementById("main-consent-banner"));
             showBannerclient(document.getElementById("consent-banner"));
@@ -170,10 +212,11 @@
     } catch (error) {
         console.error("Error fetching banner:", error);
     }
-  }
-  function showBannerclient(banner) {
+}
+ function showBannerclient(banner) {
     if (banner) {
       banner.style.display = "block";
+      
       banner.classList.add("show-banner");
       banner.classList.remove("hidden");
     }
@@ -219,6 +262,7 @@
             const originalSetAttribute = element.setAttribute;
             element.setAttribute = function(name, value) {
                 if (name === 'src' && analyticsPatterns.test(value)) {
+                    
                     element.type = 'javascript/blocked';
                     element.dataset.originalSrc = value;
                     return;
@@ -234,6 +278,7 @@
         const scripts = document.querySelectorAll('script[src]');
         scripts.forEach(script => {
             if (analyticsPatterns.test(script.src)) {
+                
                 script.type = 'javascript/blocked';
                 script.dataset.originalSrc = script.src;
                 script.src = '';
@@ -255,12 +300,14 @@
     // Function to restore scripts after delay
     function restoreScripts() {
         if (window.cmpLoaded) {
+            
             return;
         }
 
         const blockedScripts = document.querySelectorAll('script[type="javascript/blocked"]');
         blockedScripts.forEach(script => {
             if (script.dataset.originalSrc) {
+                
                 const newScript = document.createElement('script');
                 newScript.src = script.dataset.originalSrc;
                 newScript.async = true;
