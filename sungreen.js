@@ -151,11 +151,12 @@
       // --- Hardcode GDPR for sungreensystems.com ---
       let bannerType;
       if (
-        window.location.hostname === "sungreensystems.com" ||
-        window.location.hostname === "www.sungreensystems.com"
-      ) {
-        bannerType = "GDPR";
-      } else if (locationData && typeof locationData === "object") {
+  window.location.hostname === "sungreensystems.com" ||
+  window.location.hostname === "www.sungreensystems.com" ||
+  window.location.hostname === "sungreen-systems.webflow.io"
+) {
+  bannerType = "GDPR";
+} else if (locationData && typeof locationData === "object") {
         if (locationData.isEU) {
           bannerType = "GDPR";
         } else if (locationData.country === "US") {
