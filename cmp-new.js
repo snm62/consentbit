@@ -248,7 +248,7 @@ if (
   !window.location.href.includes('editor=true') &&
   !document.cookie.includes('webflow-editor')
 ) {
-(function() {
+    (function() {
     const DELAY_MS = 3000;
     const analyticsPatterns = /gtag|analytics|googletagmanager|google-analytics|fbevents|facebook/i;
     
@@ -317,5 +317,7 @@ if (
     // Set timeout for script restoration
     setTimeout(restoreScripts, DELAY_MS);
 })();
-}
+}  
+
+  
 
