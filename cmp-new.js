@@ -1,4 +1,9 @@
+if (document.documentElement.classList.contains('w-editor')) {
+  // In Webflow Editor mode, do nothing
+  return;
+}
 
+// ... rest of your CMP script ...
 (async () => {
   // Initialize state object
   window.__CMP_STATE__ = window.__CMP_STATE__ || {
