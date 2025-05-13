@@ -1,8 +1,3 @@
-if (document.documentElement.classList.contains('w-editor')) {
-  console.log("Webflow Editor detected, aborting CMP script.");
-  return;
- }
-  console.log("CMP script running on this page.");
 (async () => {
   // Initialize state object
   window.__CMP_STATE__ = window.__CMP_STATE__ || {
