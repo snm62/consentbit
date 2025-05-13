@@ -4,6 +4,11 @@ if (window.WebflowEditor) {
   return;
 }
 (async () => {
+
+  if (window.WebflowEditor) {
+  // In editor mode, do nothing
+  return;
+  }
   // Initialize state object
   window.__CMP_STATE__ = window.__CMP_STATE__ || {
     loading: false,
