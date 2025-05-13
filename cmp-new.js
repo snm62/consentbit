@@ -1,9 +1,8 @@
 if (document.documentElement.classList.contains('w-editor')) {
-  // In Webflow Editor mode, do nothing
+  console.log("Webflow Editor detected, aborting CMP script.");
   return;
-}
-
-// ... rest of your CMP script ...
+ }
+  console.log("CMP script running on this page.");
 (async () => {
   // Initialize state object
   window.__CMP_STATE__ = window.__CMP_STATE__ || {
@@ -14,7 +13,7 @@ if (document.documentElement.classList.contains('w-editor')) {
    hideBannerclient(document.getElementById("consent-banner"));
    hideBannerclient(document.getElementById("initial-consent-banner"));
    hideBannerclient(document.getElementById("main-banner"));
-   hideBannerclient(document.getElementById("main-consent-banner "));
+   hideBannerclient(document.getElementById("main-consent-banner"));
 
   
   const CONFIG = {
