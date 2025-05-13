@@ -1,7 +1,10 @@
 (async () => {
 
-  if (window.WebflowEditor) {
-  // In editor mode, do nothing
+  if (
+  document.documentElement.classList.contains('w-editor') ||
+  document.documentElement.classList.contains('w-editor-bem')
+  ) {
+  // In Webflow Editor mode, do nothing
   return;
   }
   // Initialize state object
