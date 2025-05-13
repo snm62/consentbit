@@ -1,3 +1,8 @@
+// Example for Webflow (adjust for your CMS if needed)
+if (window.WebflowEditor) {
+  // In editor mode, do nothing
+  return;
+}
 (async () => {
   // Initialize state object
   window.__CMP_STATE__ = window.__CMP_STATE__ || {
