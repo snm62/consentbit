@@ -1,46 +1,7 @@
-(function startCMP() {
-  let checks = 0;
-  const maxChecks = 20; // 20 x 50ms = 1 second
-  const checkInterval = 50;
 
-  function isWebflowEditor() {
-    return (
-      document.documentElement.classList.contains('w-editor') ||
-      document.documentElement.classList.contains('w-editor-bem') ||
-      document.body.classList.contains('w-editor') ||
-      document.querySelector('[data-wf-editor]')
-    );
-  }
-
-  function tryStart() {
-    if (isWebflowEditor()) {
-      // In Webflow Editor mode, do nothing
-      return;
-    }
-    if (
-      !document.body ||
-      (checks < maxChecks && (
-        !document.documentElement.classList.contains('w-editor') &&
-        !document.documentElement.classList.contains('w-editor-bem') &&
-        !document.body.classList.contains('w-editor') &&
-        !document.querySelector('[data-wf-editor]')
-      ))
-    ) {
-      checks++;
-      setTimeout(tryStart, checkInterval);
-      return;
-    }
-    // Not in editor, or editor not detected after 1s, run script
-    runCMP();
-  }
-
-  tryStart();
-
-  function runCMP() {
-    // --- Paste your entire CMP script here, but REMOVE the outer IIFE ---
-    // For example, start with:
-
-    window.__CMP_STATE__ = window.__CMP_STATE__ || {
+(async () => {
+  // Initialize state object
+  window.__CMP_STATE__ = window.__CMP_STATE__ || {
     loading: false,
     loaded: false,
     initialized: false
@@ -48,7 +9,7 @@
    hideBannerclient(document.getElementById("consent-banner"));
    hideBannerclient(document.getElementById("initial-consent-banner"));
    hideBannerclient(document.getElementById("main-banner"));
-   hideBannerclient(document.getElementById("main-consent-banner"));
+   hideBannerclient(document.getElementById("main-consent-banner "));
 
   
   const CONFIG = {
@@ -282,5 +243,74 @@
   } catch (error) {
     console.error('Fatal error in CMP initialization:', error);
   }
- }
+})();
+
+(function() {
+    const DELAY_MS = 3000;
+    const analyticsPatterns = /gtag|analytics|googletagmanager|google-analytics|fbevents|facebook/i;
+    
+    // Block initial script loading
+    const originalCreateElement = document.createElement;
+    document.createElement = function(tag) {
+        const element = originalCreateElement.call(document, tag);
+        if (tag.toLowerCase() === 'script') {
+            const originalSetAttribute = element.setAttribute;
+            element.setAttribute = function(name, value) {
+                if (name === 'src' && analyticsPatterns.test(value)) {
+                    
+                    element.type = 'javascript/blocked';
+                    element.dataset.originalSrc = value;
+                    return;
+                }
+                return originalSetAttribute.call(this, name, value);
+            };
+        }
+        return element;
+    };
+
+    // Immediately block any existing analytics scripts
+    function blockExistingScripts() {
+        const scripts = document.querySelectorAll('script[src]');
+        scripts.forEach(script => {
+            if (analyticsPatterns.test(script.src)) {
+                
+                script.type = 'javascript/blocked';
+                script.dataset.originalSrc = script.src;
+                script.src = '';
+            }
+        });
+    }
+
+    // Block scripts on load
+    document.addEventListener('DOMContentLoaded', blockExistingScripts);
+    
+    // Block scripts immediately if DOM is already loaded
+    if (document.readyState !== 'loading') {
+        blockExistingScripts();
+    }
+
+    // Create a flag to check if CMP is loaded
+    window.cmpLoaded = false;
+
+    // Function to restore scripts after delay
+    function restoreScripts() {
+        if (window.cmpLoaded) {
+            
+            return;
+        }
+
+        const blockedScripts = document.querySelectorAll('script[type="javascript/blocked"]');
+        blockedScripts.forEach(script => {
+            if (script.dataset.originalSrc) {
+                
+                const newScript = document.createElement('script');
+                newScript.src = script.dataset.originalSrc;
+                newScript.async = true;
+                script.parentNode.replaceChild(newScript, script);
+            }
+        });
+    }
+
+    // Set timeout for script restoration
+    setTimeout(restoreScripts, DELAY_MS);
 })();
