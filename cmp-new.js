@@ -1,14 +1,46 @@
-(async () => {
+(function startCMP() {
+  let checks = 0;
+  const maxChecks = 20; // 20 x 50ms = 1 second
+  const checkInterval = 50;
 
-  if (
-  document.documentElement.classList.contains('w-editor') ||
-  document.documentElement.classList.contains('w-editor-bem')
-  ) {
-  // In Webflow Editor mode, do nothing
-  return;
+  function isWebflowEditor() {
+    return (
+      document.documentElement.classList.contains('w-editor') ||
+      document.documentElement.classList.contains('w-editor-bem') ||
+      document.body.classList.contains('w-editor') ||
+      document.querySelector('[data-wf-editor]')
+    );
   }
-  // Initialize state object
-  window.__CMP_STATE__ = window.__CMP_STATE__ || {
+
+  function tryStart() {
+    if (isWebflowEditor()) {
+      // In Webflow Editor mode, do nothing
+      return;
+    }
+    if (
+      !document.body ||
+      (checks < maxChecks && (
+        !document.documentElement.classList.contains('w-editor') &&
+        !document.documentElement.classList.contains('w-editor-bem') &&
+        !document.body.classList.contains('w-editor') &&
+        !document.querySelector('[data-wf-editor]')
+      ))
+    ) {
+      checks++;
+      setTimeout(tryStart, checkInterval);
+      return;
+    }
+    // Not in editor, or editor not detected after 1s, run script
+    runCMP();
+  }
+
+  tryStart();
+
+  function runCMP() {
+    // --- Paste your entire CMP script here, but REMOVE the outer IIFE ---
+    // For example, start with:
+
+    window.__CMP_STATE__ = window.__CMP_STATE__ || {
     loading: false,
     loaded: false,
     initialized: false
@@ -16,7 +48,7 @@
    hideBannerclient(document.getElementById("consent-banner"));
    hideBannerclient(document.getElementById("initial-consent-banner"));
    hideBannerclient(document.getElementById("main-banner"));
-   hideBannerclient(document.getElementById("main-consent-banner "));
+   hideBannerclient(document.getElementById("main-consent-banner"));
 
   
   const CONFIG = {
@@ -250,4 +282,5 @@
   } catch (error) {
     console.error('Fatal error in CMP initialization:', error);
   }
+ }
 })();
