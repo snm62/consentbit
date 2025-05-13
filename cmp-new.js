@@ -1,8 +1,3 @@
-// Example for Webflow (adjust for your CMS if needed)
-if (window.WebflowEditor) {
-  // In editor mode, do nothing
-  return;
-}
 (async () => {
 
   if (window.WebflowEditor) {
