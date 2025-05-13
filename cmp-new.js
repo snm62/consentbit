@@ -1,14 +1,25 @@
-(async () => {
+ if (document.documentElement.classList.contains('w-editor')) {
+  // In Webflow Editor mode, do nothing
+  return;
+ }
   // Initialize state object
-  window.__CMP_STATE__ = window.__CMP_STATE__ || {
+ window.__CMP_STATE__ = window.__CMP_STATE__ || {
     loading: false,
     loaded: false,
     initialized: false
   };
-   hideBannerclient(document.getElementById("consent-banner"));
-   hideBannerclient(document.getElementById("initial-consent-banner"));
-   hideBannerclient(document.getElementById("main-banner"));
-   hideBannerclient(document.getElementById("main-consent-banner"));
+
+  function hideAllBanners() {
+  hideBannerclient(document.getElementById("consent-banner"));
+  hideBannerclient(document.getElementById("initial-consent-banner"));
+  hideBannerclient(document.getElementById("main-banner"));
+  hideBannerclient(document.getElementById("main-consent-banner"));
+ }
+ if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", hideAllBanners);
+ } else {
+  hideAllBanners();
+ }
 
   
   const CONFIG = {
@@ -244,72 +255,3 @@
   }
 })();
 
-(function() {
-    const DELAY_MS = 3000;
-    const analyticsPatterns = /gtag|analytics|googletagmanager|google-analytics|fbevents|facebook/i;
-    
-    // Block initial script loading
-    const originalCreateElement = document.createElement;
-    document.createElement = function(tag) {
-        const element = originalCreateElement.call(document, tag);
-        if (tag.toLowerCase() === 'script') {
-            const originalSetAttribute = element.setAttribute;
-            element.setAttribute = function(name, value) {
-                if (name === 'src' && analyticsPatterns.test(value)) {
-                    
-                    element.type = 'javascript/blocked';
-                    element.dataset.originalSrc = value;
-                    return;
-                }
-                return originalSetAttribute.call(this, name, value);
-            };
-        }
-        return element;
-    };
-
-    // Immediately block any existing analytics scripts
-    function blockExistingScripts() {
-        const scripts = document.querySelectorAll('script[src]');
-        scripts.forEach(script => {
-            if (analyticsPatterns.test(script.src)) {
-                
-                script.type = 'javascript/blocked';
-                script.dataset.originalSrc = script.src;
-                script.src = '';
-            }
-        });
-    }
-
-    // Block scripts on load
-    document.addEventListener('DOMContentLoaded', blockExistingScripts);
-    
-    // Block scripts immediately if DOM is already loaded
-    if (document.readyState !== 'loading') {
-        blockExistingScripts();
-    }
-
-    // Create a flag to check if CMP is loaded
-    window.cmpLoaded = false;
-
-    // Function to restore scripts after delay
-    function restoreScripts() {
-        if (window.cmpLoaded) {
-            
-            return;
-        }
-
-        const blockedScripts = document.querySelectorAll('script[type="javascript/blocked"]');
-        blockedScripts.forEach(script => {
-            if (script.dataset.originalSrc) {
-                
-                const newScript = document.createElement('script');
-                newScript.src = script.dataset.originalSrc;
-                newScript.async = true;
-                script.parentNode.replaceChild(newScript, script);
-            }
-        });
-    }
-
-    // Set timeout for script restoration
-    setTimeout(restoreScripts, DELAY_MS);
-})();
