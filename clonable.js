@@ -174,61 +174,6 @@ try {
     }
   }
 
-  async function fetchBanner(locationData) {
-    try {
-        // Check if consent has been given
-        const consentGiven = localStorage.getItem("consent-given");
-        if (consentGiven === "true") {
-            
-            // Hide all banners immediately if consent is given
-          
-            hideBannerclient(document.getElementById("initial-consent-banner"));
-            hideBannerclient(document.getElementById("main-banner"));
-            hideBannerclient(document.getElementById("main-consent-banner"));
-            return; // Exit early if consent is already given
-        }
-
-        // Log the location data for debugging
-        
-
-        // Show the appropriate banner based on the location data
-        if (locationData === "GDPR") {
-            
-            hideBannerclient(document.getElementById("initial-consent-banner"));
-            hideBannerclient(document.getElementById("main-consent-banner"));
-            showBannerclient(document.getElementById("consent-banner"));
-        } else if (locationData === "CCPA") {
-            
-            
-            hideBannerclient(document.getElementById("main-banner"));
-            showBannerclient(document.getElementById("initial-consent-banner"));
-        } else {
-            
-            hideBannerclient(document.getElementById("initial-consent-banner"));
-            hideBannerclient(document.getElementById("main-consent-banner"));
-            showBannerclient(document.getElementById("consent-banner"));
-        }
-    } catch (error) {
-        console.error("Error fetching banner:", error);
-    }
-}
- function showBannerclient(banner) {
-    if (banner) {
-      banner.style.display = "block";
-      
-      banner.classList.add("show-banner");
-      banner.classList.remove("hidden");
-    }
-  }
-
-  function hideBannerclient(banner) {
-    if (banner) {
-      banner.style.display = "none"; // Hide the banner
-      banner.classList.remove("show-banner");
-      banner.classList.add("hidden");
-    }
-  }
-
   try {
     // Initial load attempt
     await ScriptLoader.initialize();
